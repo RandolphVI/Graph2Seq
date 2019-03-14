@@ -213,25 +213,31 @@ def create_word2vec_model(embedding_size, input_file=TEXT_DIR):
     model.save(word2vec_file)
 
 
-def load_vocab_size(embedding_size):
+def load_word2vec_matrix(embedding_size):
     """
-    Return the vocab size of the word2vec file.
+    Return the word2vec model matrix.
 
     Args:
         embedding_size: The embedding size
     Returns:
-        The vocab size of the word2vec file
+        The word2vec model matrix
     Raises:
         IOError: If word2vec model file doesn't exist
     """
     word2vec_file = '../data/word2vec_' + str(embedding_size) + '.model'
 
     if not os.path.isfile(word2vec_file):
-        raise IOError("✘ The word2vec file doesn't exist."
+        raise IOError("✘ The word2vec file doesn't exist. "
                       "Please use function <create_vocab_size(embedding_size)> to create it!")
 
-    model = word2vec.Word2Vec.load(word2vec_file)
-    return len(model.wv.vocab.items())
+    model = gensim.models.Word2Vec.load(word2vec_file)
+    vocab_size = len(model.wv.vocab.items())
+    vocab = dict([(k, v.index) for k, v in model.wv.vocab.items()])
+    vector = np.zeros([vocab_size, embedding_size])
+    for key, value in vocab.items():
+        if key is not None:
+            vector[value] = model[key]
+    return vocab_size, vector
 
 
 def data_word2vec(input_file, num_classes_list, total_classes, word2vec_model):
@@ -415,32 +421,6 @@ def data_augmented(data, drop_rate=1.0):
             return aug_onehot_labels_tuple
 
     return _AugData()
-
-
-def load_word2vec_matrix(vocab_size, embedding_size):
-    """
-    Return the word2vec model matrix.
-
-    Args:
-        vocab_size: The vocab size of the word2vec model file
-        embedding_size: The embedding size
-    Returns:
-        The word2vec model matrix
-    Raises:
-        IOError: If word2vec model file doesn't exist
-    """
-    word2vec_file = '../data/word2vec_' + str(embedding_size) + '.model'
-
-    if not os.path.isfile(word2vec_file):
-        raise IOError("✘ The word2vec file doesn't exist. "
-                      "Please use function <create_vocab_size(embedding_size)> to create it!")
-    model = gensim.models.Word2Vec.load(word2vec_file)
-    vocab = dict([(k, v.index) for k, v in model.wv.vocab.items()])
-    vector = np.zeros([vocab_size, embedding_size])
-    for key, value in vocab.items():
-        if key is not None:
-            vector[value] = model[key]
-    return vector
 
 
 def load_data_and_labels(data_file, num_classes_list, total_classes, embedding_size, data_aug_flag):
