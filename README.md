@@ -14,12 +14,12 @@ See data format in `data` folder which including the data sample files.
 
 ### Data Format
 
-This repository can be used in other datasets by two ways:
+This repository can be used in other datasets in two ways:
 
 1. Modify your datasets into the same format of the sample.
 2. Modify the data preprocess code in `data_helpers.py`.
 
-Anyway, it should depends on what your data and task are.
+Anyway, it should depend on what your data and task are.
 
 ## Network Structure
 
@@ -35,7 +35,7 @@ References:
 
 黄威，Randolph
 
-SCU SE Bachelor; USTC CS Master
+SCU SE Bachelor; USTC CS Ph.D.
 
 Email: chinawolfman@hotmail.com
 
